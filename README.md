@@ -1,1 +1,1 @@
-# pushupBra | Just something everyone gets decieved by. :-D
+# pushupBra | Just something everyone gets deceived by. :-D
