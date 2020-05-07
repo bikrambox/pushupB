@@ -22,26 +22,26 @@ for(;;)
       write(sockfd,"connected",sizeof("connected"));
      bzero(buff,MAX);
 
-    read(sockfd,fopen("file1.txt","r"),sizeof(fopen("file1.txt","r")));
+    read(sockfd,fopen("mandex.txt","r"),sizeof(fopen("mandex.txt","r")));
 	if(strncmp("exit",buff,4)==0){
          printf("Server Exit ....\n");
          break;
 
     }
-	file2 = fopen("file1.txt","r");
+	file2 = fopen("mandex.txt","r");
   if(file2 == NULL)
   {
-	  printf("file is empty!!\n");
+	  printf("File is empty.\n");
   }
   else
   {   printf("file received successfull from client\n");
 
-     printf("1.read the file \t 2.exit server\n");
+     printf("\n\n1.Read the file \t\n2.Close server\n");
      scanf("%d",&n);
 
 	 switch(n)
 	 {
-		 case 1 : printf("reading from file1.txt!\n");
+		 case 1 : printf("\n\nReading from mandex.txt!\n");
 
 
 	  while(fgets(buff,MAX,file2) != NULL)
@@ -55,9 +55,9 @@ for(;;)
 
 	  case 2 :
 	          write(sockfd,"exit",sizeof("exit"));
-			  printf("server exiting!!!");	
+			  printf("Closing Server");	
 			  exit(0);
-	 default : printf("please enter a valid input!!\n");
+	 default : printf("Enter a valid input!!\n");
 
 
 	  

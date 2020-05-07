@@ -27,23 +27,23 @@ void func(int sockfd)
 
                }
 		bzero(buff, sizeof(buff)); 
-        printf("writing in file1.txt:"); 
+        printf("\n::writing in the file : mandex.txt:\n\n"); 
         n = 0; 
         while ((buff[n++] = getchar()) != '\n') 
         ; 
 
-		filep = fopen("file1.txt", "w");
+		filep = fopen("mandex.txt", "w");
 
 		fputs(buff,filep);
 		fputs("\n",filep);
 
-        write(sockfd, fopen("file1.txt", "r") , sizeof(fopen("file1.txt", "r"))); 
+        write(sockfd, fopen("mandex.txt", "r") , sizeof(fopen("mandex.txt", "r"))); 
         
 		fclose(filep);
 
         bzero(buff, sizeof(buff)); 
 
-		printf("file sent to server successfully\n");     
+		printf("File was sent.\n");     
     } 
 } 
   
@@ -64,7 +64,7 @@ int main()
   
     // assign IP, PORT 
     servaddr.sin_family = AF_INET; 
-    servaddr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
+    servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");  //Localhost address && mandex was here
     servaddr.sin_port = htons(PORT); 
   
     // connect the client socket to server socket 
