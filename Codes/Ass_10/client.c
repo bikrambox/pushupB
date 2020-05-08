@@ -7,7 +7,7 @@
 #include<netinet/in.h>
 #include<arpa/inet.h>
 
-#define PORT 12564
+#define PORT 4444
 
 int main()
 {   
@@ -15,7 +15,7 @@ int main()
     struct sockaddr_in serverAddr;
     char buffer[1024];
 
-    clientSocket = socket(AF_INET, SOCK_DGRAM, 0);
+    clientSocket = socket(AF_INET, SOCK_STREAM, 0);
     if(clientSocket < 0){
         printf("[-]Error in Conncection.\n");
         exit(1);
