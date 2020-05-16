@@ -1,80 +1,81 @@
 #include <stdio.h>
-#include <string.h>
+#include <unistd.h>
 #include <stdlib.h>
-#include <sys/types.h>
+#include <string.h>
+#include <netdb.h>
+#include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <unistd.h>
-#include <errno.h>
-#define PORT 4444
-#define MAX 100
-int main()
-{
-int sockfd,ret,newSocket;
-struct sockaddr_in serverAddr,newAddr;
-char buffer[MAX];
-pid_t childpid;
-socklen_t addr_size;
-sockfd= socket(AF_INET,SOCK_STREAM,0);
-if(sockfd<0)
-{
-printf("Error in connection\n");
-exit(1);
+
+#define BUFSIZE 1024
+
+void error(char *msg) {
+  perror(msg);
+  exit(1);
 }
-printf("Server Socket is created\n");
-memset(&serverAddr,'\0',sizeof(serverAddr));
-serverAddr.sin_family=AF_INET;
-serverAddr.sin_port=htons(PORT);
-serverAddr.sin_addr.s_addr=inet_addr("127.0.0.1");
-ret=bind(sockfd,(struct sockaddr*)&serverAddr,sizeof(serverAddr));
-if(ret<0)
-{
-printf("Error in Binding.\n");
-exit(1);
-}
-printf("Bind to port %d\n",4444);
-if(listen(sockfd,2)==0)
-{
-	printf("Listening...\n");
-}
-else
-{
-	printf("Error in binding.\n");
-}
-while(1)
-{
-	newSocket=accept(sockfd,(struct sockaddr*)&newAddr,&addr_size);
-	if(newSocket < 0)
-	{
-		exit(1);
-	}
-	
-printf("Connection accepted from %s:%d\n",inet_ntoa(newAddr.sin_addr),ntohs(newAddr.sin_port));
-if((childpid=fork())==0)
-{
-	close(sockfd);
-	while(1)
-	{
-		 bzero(buffer, MAX);
-		recv(newSocket,buffer,MAX,0);
-		if (strncmp("exit", buffer, 4) == 0)
-		{
-			printf("Disconnected from %s:%d\n",inet_ntoa(newAddr.sin_addr),ntohs(newAddr.sin_port));
-			break;
-		}
-		else
-		{
-			printf("From Client: %s\n", buffer); 
-			bzero(buffer, MAX);
-			printf("Server:\t");
-			scanf("%s",buffer);
-			send(newSocket,buffer,strlen(buffer),0);
-			
-		}
-	}
-	}
-}
-close(newSocket);	
-	return 0;
+
+int main(int argc, char **argv) {
+  int sockfd; 
+  int portno; 
+  int clientlen; 
+  struct sockaddr_in serveraddr;
+  struct sockaddr_in clientaddr; 
+  struct hostent *hostp;
+  char buf[BUFSIZE]; 
+  char *hostaddrp; 
+  int optval; 
+  int n; 
+
+ 
+  if (argc != 2) {
+    fprintf(stderr, "usage: %s <port>\n", argv[0]);
+    exit(1);
+  }
+  portno = atoi(argv[1]);
+
+
+  sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+  if (sockfd < 0) 
+    error("ERROR opening socket");
+
+  optval = 1;
+  setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, 
+	     (const void *)&optval , sizeof(int));
+
+
+  bzero((char *) &serveraddr, sizeof(serveraddr));
+  serveraddr.sin_family = AF_INET;
+  serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
+  serveraddr.sin_port = htons((unsigned short)portno);
+
+  if (bind(sockfd, (struct sockaddr *) &serveraddr, 
+	   sizeof(serveraddr)) < 0) 
+    error("ERROR on binding");
+
+  clientlen = sizeof(clientaddr);
+  while (1) {
+
+    bzero(buf, BUFSIZE);
+    n = recvfrom(sockfd, buf, BUFSIZE, 0,
+		 (struct sockaddr *) &clientaddr, &clientlen);
+    if (n < 0)
+      error("ERROR in recvfrom");
+
+    hostp = gethostbyaddr((const char *)&clientaddr.sin_addr.s_addr, 
+			  sizeof(clientaddr.sin_addr.s_addr), AF_INET);
+    if (hostp == NULL)
+      error("ERROR on gethostbyaddr");
+    hostaddrp = inet_ntoa(clientaddr.sin_addr);
+    if (hostaddrp == NULL)
+      error("ERROR on inet_ntoa\n");
+    printf("server received datagram from %s (%s)\n", 
+	   hostp->h_name, hostaddrp);
+    printf("server received %ld/%d bytes: %s\n", strlen(buf), n, buf);
+    
+    n = sendto(sockfd, buf, strlen(buf), 0, 
+	       (struct sockaddr *) &clientaddr, clientlen);
+    if (n < 0) 
+      error("ERROR in sendto");
+  }
 }
