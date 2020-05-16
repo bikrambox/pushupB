@@ -44,7 +44,8 @@ int main(int argc, char *argv[]) {
       perror("ERROR connecting");
       exit(1);
    }
-   
+
+
    printf("Please enter the message: ");
    bzero(buffer,256);
    fgets(buffer,255,stdin);
