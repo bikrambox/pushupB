@@ -26,7 +26,7 @@ int main(){
   bind(welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
 
   if(listen(welcomeSocket,5)==0)
-    printf("Listening\n");
+    printf("Listening:: JUst hit it.\n");
   else
     printf("Error\n");
 
@@ -42,8 +42,15 @@ int main(){
       while(nBytes!=0){
         nBytes = recv(newSocket,buffer,1024,0);
 
-        for (i=0;i<nBytes-1;i++){
-          buffer[i] = toupper(buffer[i]);
+        for (i=0;i<nBytes;i++){
+         if //( buffer[i] = toupper(buffer[i]));
+            //(buffer[i] = tolower(buffer[i]));
+            (buffer[i]>='a' && buffer[i]<='z')  //Finally Done! HAHA mandex was here
+            buffer[i]=buffer[i]-32;
+
+        else if
+            (buffer[i]>='A' && buffer[i]<='Z')
+            buffer[i]=buffer[i]+32;
         }
 
         send(newSocket,buffer,nBytes,0);

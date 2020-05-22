@@ -68,7 +68,7 @@ int main()
 	// send reversed string to client
 	// by send system call
 	send(new_socket, str, sizeof(str), 0);
-	printf("\nModified string sent to client\n");
+	printf("\nModified string sent to client.\n");
 
 	return 0;
 }

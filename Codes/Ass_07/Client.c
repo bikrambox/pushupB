@@ -24,9 +24,11 @@ int main(){
   connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size);
 
   while(1){
+    printf("________________________________________\n\n");
     printf("Type a sentence to send to server:\n");
     fgets(buffer,1024,stdin);
-    printf("You typed: %s",buffer);
+    printf("\nYou typed: %s",buffer);
+    printf("________________________________________\n\n");
 
     nBytes = strlen(buffer) + 1;
 

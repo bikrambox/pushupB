@@ -17,6 +17,7 @@ int main()
 	struct sockaddr_in serv_addr;
 	char str[100];
 
+	printf("______________________________\n\n");
 	printf("\nInput the string:");
 	scanf("%[^\n]s", str);
 
